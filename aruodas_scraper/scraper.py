@@ -7,7 +7,7 @@ from random import randint
 
 class Scraper:
     """
-    A Scraper designed to scrape information about the rent of real estate listings
+    A Scraper designed to scrape information about the monthly rent of real estate listings
     from www.aruodas.lt page
 
     Parameters:
@@ -19,7 +19,8 @@ class Scraper:
     """
     def __init__(self) -> None:
         self.headers = {
-            "User Agent": 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36'
+            "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.157 Safari/537.36",
+            "Accept-Language": "en-US, en;q=0.5",
         }
         self.pages = 0
 
@@ -30,6 +31,17 @@ class Scraper:
         :return: requests.Response
         """
         return requests.get(url, headers=self.headers)
+
+    def get_soup(self, response: requests.Response) -> BeautifulSoup:
+        """
+        Returns BeautifulSoup response
+        :param response: get_response
+        :return: response code from the url
+        """
+        if response.ok:
+            return BeautifulSoup(response.text, "html.parser")
+        else:
+            print(f"error:{response.status_code}")
 
     def extract_info(self, soup: BeautifulSoup, results_list) -> list:
         """
@@ -86,10 +98,10 @@ class Scraper:
         scraped_data = []
 
         for page_no in range(0, pages):
-            req = self.get_response(
-                f"https://www.aruodas.lt/butu-nuoma/puslapis/{page_no}/"
-            )
-            soup = BeautifulSoup(req.text, 'html.parser')
+            soup = self.get_soup(self.get_response(
+              f"https://www.aruodas.lt/butu-nuoma/puslapis/{page_no}/"
+          ))
+
             result = self.extract_info(soup, scraped_data)
             sleep(randint(1, 4))
 
@@ -99,3 +111,15 @@ class Scraper:
                  'floor', 'floors_total']]
 
         return df
+
+    def save_to_csv(self, pages: int, name: str) -> None:
+        """
+        Saves the scraped information to .csv file
+        :param pages: number of pages to scrape
+        :param name: name of the file to save (eg. 'one_page')
+        :return: None
+        """
+        info_to_save = self.scrape_aruodas(pages)
+        pd.DataFrame(info_to_save).to_csv(f"{name}.csv", index=False)
+
+        return None
