@@ -120,6 +120,8 @@ class Scraper:
         :param name: name of the file to save (eg. 'one_page')
         :return: None
         """
+        self.name = name
+        self.pages = pages
         info_to_save = self.scrape_aruodas(pages)
         pd.DataFrame(info_to_save).to_csv(f"{name}.csv", index=False)
 
