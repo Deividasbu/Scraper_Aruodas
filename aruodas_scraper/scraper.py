@@ -23,6 +23,7 @@ class Scraper:
             "Accept-Language": "en-US, en;q=0.5",
         }
         self.pages = 0
+        self.name = ""
 
     def get_response(self, url: str) -> requests.Response:
         """
