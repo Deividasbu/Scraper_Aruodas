@@ -113,14 +113,15 @@ class Scraper:
 
         return df
 
-    # def save_to_csv(self, pages: int, name: str) -> None:
-    #     """
-    #     Saves the scraped information to .csv file
-    #     :param pages: number of pages to scrape
-    #     :param name: name of the file to save (eg. 'one_page')
-    #     :return: None
-    #     """
-    #     info_to_save = self.scrape_aruodas(pages)
-    #     pd.DataFrame(info_to_save).to_csv(f"{name}.csv", index=False)
-    #
-    #     return None
+    def save_to_csv(self, pages: int, name: str) -> None:
+        """
+        Saves the scraped information to .csv file
+        :param pages: number of pages to scrape
+        :param name: name of the file to save (eg. 'one_page')
+        :return: None
+        """
+        info_to_save = self.scrape_aruodas(pages)
+        pd.DataFrame(info_to_save).to_csv(f"{name}.csv", index=False)
+
+        return None
+
